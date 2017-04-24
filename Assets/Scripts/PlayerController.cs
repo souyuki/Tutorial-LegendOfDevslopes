@@ -7,9 +7,16 @@ public class PlayerController : MonoBehaviour {
 	// hero move speed
 	[SerializeField] private float moveSpeed = 10.0f;
 
+	[SerializeField] private LayerMask layerMask;
+
+
+	[SerializeField] private float turnSpeedSmoothing = 10f;
+
 	//
 	private CharacterController characterController;
 
+	// our current look target;  init at zero
+	private Vector3 currentLookTarget = Vector3.zero;
 
 	// Use this for initialization
 	void Start () {
@@ -31,4 +38,41 @@ public class PlayerController : MonoBehaviour {
 		characterController.SimpleMove(moveDirection * moveSpeed);
 
 	}
+
+	// runs after all physics 
+	void FixedUpdate ()
+	{
+		// create variable for raycast
+		RaycastHit hit;
+
+		// send ray from camera.main to user mouse position
+		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+
+		// send ray from origin point, in its direction for 500 units, set it to color blue
+		Debug.DrawRay (ray.origin, ray.direction * 500, Color.blue);
+
+
+		// make the Ray, store the hits, ray distance of 500, pass layer mask we are tryig to hit, then ignore any other physics triggers it might cause
+		if (Physics.Raycast (ray, out hit, 500, layerMask, QueryTriggerInteraction.Ignore)) {
+
+			// if we arent already looking at where the mouse is pointed, then look there
+			if (hit.point != currentLookTarget) {
+				// set look to new location
+				currentLookTarget = hit.point;
+			}
+
+			// get the mouse position in the X,Z planes, no vertical movement.
+			Vector3 targetPosition = new Vector3 (hit.point.x, transform.position.y, hit.point.z);
+
+			// Calculate the rotation for the hero to look at the new targetPosition
+			Quaternion rotation = Quaternion.LookRotation(targetPosition - transform.position);
+
+
+			// actually rotate the hero
+			transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * turnSpeedSmoothing);
+		}
+
+	}
+
+
 }
