@@ -12,11 +12,15 @@ public class PlayerController : MonoBehaviour {
 
 	[SerializeField] private float turnSpeedSmoothing = 10f;
 
+
+
 	//
 	private CharacterController characterController;
 
 	// our current look target;  init at zero
 	private Vector3 currentLookTarget = Vector3.zero;
+
+	private Animator animator;
 
 	// Use this for initialization
 	void Start () {
@@ -24,18 +28,40 @@ public class PlayerController : MonoBehaviour {
 		// get reference to the character controller component
 		characterController = GetComponent<CharacterController>();
 
-
+		// set reference to animator controller
+		animator = GetComponent<Animator>();
 		
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 
 		// move direction is in which the buttons are pressed
-		Vector3 moveDirection = new Vector3( Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical") );
+		Vector3 moveDirection = new Vector3 (Input.GetAxis ("Horizontal"), 0f, Input.GetAxis ("Vertical"));
 
 		// use built-in function to move it.
-		characterController.SimpleMove(moveDirection * moveSpeed);
+		characterController.SimpleMove (moveDirection * moveSpeed);
+
+
+		// detect and trigger walk animation
+		if (moveDirection == Vector3.zero) {
+			animator.SetBool ("IsWalking", false);
+		} else {
+			animator.SetBool ("IsWalking", true);
+		}
+
+		// LEFT MOUSE BUTTON - double chop attack
+		if(Input.GetMouseButtonDown(0) ){
+			animator.Play("DoubleChop");
+		}
+
+		// RIGHT MOUSE BUTTON - spin attack
+		if(Input.GetMouseButtonDown(1) ){
+			animator.Play("Whirlwind");
+		}
+
+
 
 	}
 
@@ -48,9 +74,8 @@ public class PlayerController : MonoBehaviour {
 		// send ray from camera.main to user mouse position
 		Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 
-		// send ray from origin point, in its direction for 500 units, set it to color blue
+		// Visualize the raycast; send ray from origin point, in its direction for 500 units, set it to color blue
 		Debug.DrawRay (ray.origin, ray.direction * 500, Color.blue);
-
 
 		// make the Ray, store the hits, ray distance of 500, pass layer mask we are tryig to hit, then ignore any other physics triggers it might cause
 		if (Physics.Raycast (ray, out hit, 500, layerMask, QueryTriggerInteraction.Ignore)) {
