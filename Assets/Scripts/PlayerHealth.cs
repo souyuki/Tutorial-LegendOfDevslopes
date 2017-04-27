@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour {
 
-
+	// Starting health of the player
 	[SerializeField] private int startingHealth = 100;
 
+	// Time allowed between taking hits
 	[SerializeField] private float timeSinceLasthit = 2f;
 
 	// track time between hits
@@ -19,7 +20,13 @@ public class PlayerHealth : MonoBehaviour {
 	private Animator animator;
 
 	// Current health of player
-	private int currentHealth;
+	[SerializeField] private int currentHealth;
+
+	// get the player's audio source
+	private AudioSource audioSource;
+
+	// when the player is hit by the enemy
+	[SerializeField] private AudioClip playerHitSFX;
 
 
 	// Use this for initialization
@@ -33,6 +40,9 @@ public class PlayerHealth : MonoBehaviour {
 
 		// set current health
 		currentHealth = startingHealth;
+
+		// get the player's audio source
+		audioSource = GetComponent<AudioSource>();
 
 	}
 	
@@ -50,13 +60,14 @@ public class PlayerHealth : MonoBehaviour {
 		// did we collide with a weapon and it's been long enough?
 		if (timer > timeSinceLasthit && !GameManager.instance.IsGameOver) {
 
+			// if it was a weapon
 			if (other.tag == "Weapon") {
 
 				// apply the hit to the player
 				TakeHit();
 
 
-				// reset the timer
+				// reset the time elapsed counter
 				timer = 0f;
 
 			}
@@ -77,20 +88,25 @@ public class PlayerHealth : MonoBehaviour {
 			// play the player being hit animation
 			animator.Play ("Hurt");
 
+			// play the sound effect
+			audioSource.PlayOneShot(playerHitSFX);
+
 			// TODO - give enemies independent damage
 			// Apply Damage
 			currentHealth -= 10;
 
 		}
 
-
+		// if player is at or below zero, player is dead
 		if (currentHealth <= 0) {
+
+			// Kill the player
 			KillPlayer();
 		}
 
 	}
 
-
+	// Handle player death
 	private void KillPlayer ()
 	{
 

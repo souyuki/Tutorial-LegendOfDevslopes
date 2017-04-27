@@ -12,6 +12,8 @@ public class EnemyMove : MonoBehaviour {
 	private NavMeshAgent nav;
 	private Animator animator;
 
+	// TODO - the stopping distance from player
+	[SerializeField] float stopDistanceFromTarget;
 
 	void Awake()
 	{
