@@ -31,10 +31,22 @@ public class EnemyMove : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 
-		// set pathfinding for the enemies to go after the player
-		nav.SetDestination(player.position);
+		// check that game is not over
+		if (!GameManager.instance.IsGameOver) {
+
+			// set pathfinding for the enemies to go after the player
+			nav.SetDestination (player.position);
+
+		} else {
+
+			// game is over, so have the animation turn to idle
+			nav.enabled = false;
+			animator.Play("Idle");
+
+		}
 
 	}
 }

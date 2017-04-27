@@ -77,6 +77,10 @@ public class PlayerHealth : MonoBehaviour {
 			// play the player being hit animation
 			animator.Play ("Hurt");
 
+			// TODO - give enemies independent damage
+			// Apply Damage
+			currentHealth -= 10;
+
 		}
 
 

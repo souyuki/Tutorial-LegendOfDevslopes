@@ -79,4 +79,29 @@ public class EnemyAttack : MonoBehaviour {
 
 	}
 
+	// Enable the Weapon Box Collider - animation event
+	public void EnemyAttackBegin ()
+	{
+
+		// enable weapon box collider
+		foreach (BoxCollider weapon in weaponColliders) {
+
+			// enable
+			weapon.enabled = true;
+		}
+
+	}
+
+	// Enable the Weapon Box Collider - animation event
+	public void EnemyAttackEnd ()
+	{
+		// enable weapon box collider
+		foreach (BoxCollider weapon in weaponColliders) {
+
+			// disable
+			weapon.enabled = false;
+		}
+
+	}
+
 }
