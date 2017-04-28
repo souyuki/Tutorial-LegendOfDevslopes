@@ -12,7 +12,8 @@ public class PlayerController : MonoBehaviour {
 
 	[SerializeField] private float turnSpeedSmoothing = 10f;
 
-
+	// get the colliders for the hero swords
+	private BoxCollider[] heroSwordColliders;
 
 	//
 	private CharacterController characterController;
@@ -30,6 +31,9 @@ public class PlayerController : MonoBehaviour {
 
 		// set reference to animator controller
 		animator = GetComponent<Animator>();
+
+		// look for the sword colliders
+		heroSwordColliders = GetComponentsInChildren<BoxCollider>();
 		
 	}
 	
@@ -48,7 +52,6 @@ public class PlayerController : MonoBehaviour {
 	// runs after all physics 
 	void FixedUpdate ()
 	{
-
 
 		if (!GameManager.instance.IsGameOver) {
 
@@ -106,4 +109,32 @@ public class PlayerController : MonoBehaviour {
 			transform.rotation = Quaternion.Lerp (transform.rotation, rotation, Time.deltaTime * turnSpeedSmoothing);
 		}
 	}
+
+
+	// Enable the Weapon Box Collider - animation event
+	public void HeroAttackBegin ()
+	{
+
+		// enable weapon box colliders
+		foreach (BoxCollider weapon in heroSwordColliders) {
+
+			// enable
+			weapon.enabled = true;
+		}
+
+	}
+
+	// Enable the Weapon Box Collider - animation event
+	public void HeroAttackEnd ()
+	{
+		// disable weapon box colliders
+		foreach (BoxCollider weapon in heroSwordColliders) {
+
+			// disable
+			weapon.enabled = false;
+		}
+
+	}
+
+
 }

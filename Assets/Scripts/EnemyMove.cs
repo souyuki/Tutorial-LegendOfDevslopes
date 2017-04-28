@@ -12,6 +12,9 @@ public class EnemyMove : MonoBehaviour {
 	private NavMeshAgent nav;
 	private Animator animator;
 
+	// get access to the enemy health
+	private EnemyHealth enemyHealth;
+
 	// TODO - the stopping distance from player
 	[SerializeField] float stopDistanceFromTarget;
 
@@ -26,8 +29,10 @@ public class EnemyMove : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		animator = GetComponent<Animator>();
-		nav = GetComponent<NavMeshAgent>();
+		// access to cmoponents
+		animator 	= GetComponent<Animator>();
+		nav 		= GetComponent<NavMeshAgent>();
+		enemyHealth = GetComponent<EnemyHealth>();
 
 				
 	}
@@ -35,12 +40,15 @@ public class EnemyMove : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-
-		// check that game is not over
-		if (!GameManager.instance.IsGameOver) {
-
+	 
+		// check that game is not over and enemy is alive
+		if (!GameManager.instance.IsGameOver && enemyHealth.IsAlive) {
 			// set pathfinding for the enemies to go after the player
 			nav.SetDestination (player.position);
+
+		} else if ( (!GameManager.instance.IsGameOver || GameManager.instance.IsGameOver) && !enemyHealth.IsAlive) {
+			// enemy is dead, regardless of game state
+			nav.enabled = false;
 
 		} else {
 

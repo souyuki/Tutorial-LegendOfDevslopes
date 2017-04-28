@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class EnemyAttack : MonoBehaviour {
 
-	// attack distance
-	[SerializeField] private float attackRange = 3f;
+	// Minimum attack distance
+	[SerializeField] private float attackRangeMin = 0f;
+
+	// Maxmimum attack distance
+	[SerializeField] private float attackRangeMax = 3f;
 
 	// The amount of time between attacks
 	[SerializeField] private float timeBetweenAttacks = 1f;
+
+	// Access to the enemy health
+	private EnemyHealth enemyHealth;
 
 	// Animator to play the attack animations
 	private Animator animator;
@@ -35,6 +41,9 @@ public class EnemyAttack : MonoBehaviour {
 		// get the player from GameManager
 		player = GameManager.instance.Player;
 
+		// get access to the enemy health
+		enemyHealth = GetComponent<EnemyHealth>();
+
 		// Start the recursive enemy attack coroutine
 		StartCoroutine( Attack() );
 
@@ -43,9 +52,11 @@ public class EnemyAttack : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
+		// get float distance between enemy and player
+		float currentEnemyDistance = Vector3.Distance (transform.position, player.transform.position);
 
-		// calculate distance between enemy and the player
-		if ( Vector3.Distance (transform.position, player.transform.position) < attackRange ) {
+		// calculate distance between enemy and the player and check enemy is alive
+		if ( currentEnemyDistance >= attackRangeMin && currentEnemyDistance <= attackRangeMax && enemyHealth.IsAlive) {
 			// player is in range
 			isPlayerInRange = true;
 		} else {
@@ -92,10 +103,10 @@ public class EnemyAttack : MonoBehaviour {
 
 	}
 
-	// Enable the Weapon Box Collider - animation event
+	// Disable the Weapon Box Collider - animation event
 	public void EnemyAttackEnd ()
 	{
-		// enable weapon box collider
+		// disable weapon box collider
 		foreach (BoxCollider weapon in weaponColliders) {
 
 			// disable
