@@ -23,6 +23,9 @@ public class EnemyHealth : MonoBehaviour {
 	// hit sound for enemy
 	[SerializeField] private AudioClip enemyHitSFX;
 
+	// blood particle fx
+	private ParticleSystem blood;
+
 	// track time elapsed
 	private float timer;
 
@@ -65,6 +68,8 @@ public class EnemyHealth : MonoBehaviour {
 		nav 			= GetComponent<NavMeshAgent>();
 		animator 		= GetComponent<Animator>();
 		audioSource 	= GetComponent<AudioSource>();
+		blood			= GetComponentInChildren<ParticleSystem>();
+
 
 		// initialize isAlive to TRUE
 		isAlive = true;
@@ -127,6 +132,9 @@ public class EnemyHealth : MonoBehaviour {
 
 			// play the Hurt animation
 			animator.Play ("Hurt");
+
+			// play blood pfx
+			blood.Play();
 
 			// apply the damage
 			currentHealth -= 10;

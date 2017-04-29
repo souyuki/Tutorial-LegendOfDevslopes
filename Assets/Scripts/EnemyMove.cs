@@ -16,7 +16,9 @@ public class EnemyMove : MonoBehaviour {
 	private EnemyHealth enemyHealth;
 
 	// TODO - the stopping distance from player
-	[SerializeField] float stopDistanceFromTarget;
+	//[SerializeField] float stopDistanceFromTarget;
+	public float stopDistanceFromTarget = 10f;
+
 
 	void Awake()
 	{
@@ -34,15 +36,20 @@ public class EnemyMove : MonoBehaviour {
 		nav 		= GetComponent<NavMeshAgent>();
 		enemyHealth = GetComponent<EnemyHealth>();
 
-				
+		//nav.stoppingDistance = stopDistanceFromTarget;
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+
+		// get distance between enemy and player
+		//float currentDistanceFromTarget = Vector3.Distance(transform.position, player.position);
+
 	 
 		// check that game is not over and enemy is alive
 		if (!GameManager.instance.IsGameOver && enemyHealth.IsAlive) {
+
 			// set pathfinding for the enemies to go after the player
 			nav.SetDestination (player.position);
 
@@ -59,4 +66,16 @@ public class EnemyMove : MonoBehaviour {
 		}
 
 	}
+
+	// for debugging and understading distances
+	void OnDrawGizmos ()
+	{
+
+//		// Stop Distance
+//		Gizmos.color = Color.blue;
+//		Gizmos.DrawWireSphere(transform.position, stopDistanceFromTarget);
+
+
+	}
+
 }

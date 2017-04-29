@@ -8,7 +8,7 @@ public class EnemyAttack : MonoBehaviour {
 	[SerializeField] private float attackRangeMin = 0f;
 
 	// Maxmimum attack distance
-	[SerializeField] private float attackRangeMax = 3f;
+	[SerializeField] private float attackRangeMax = 3.5f;
 
 	// The amount of time between attacks
 	[SerializeField] private float timeBetweenAttacks = 1f;
@@ -56,7 +56,7 @@ public class EnemyAttack : MonoBehaviour {
 		float currentEnemyDistance = Vector3.Distance (transform.position, player.transform.position);
 
 		// calculate distance between enemy and the player and check enemy is alive
-		if ( currentEnemyDistance >= attackRangeMin && currentEnemyDistance <= attackRangeMax && enemyHealth.IsAlive) {
+		if ( currentEnemyDistance <= attackRangeMax && enemyHealth.IsAlive) {
 			// player is in range
 			isPlayerInRange = true;
 		} else {
@@ -75,6 +75,8 @@ public class EnemyAttack : MonoBehaviour {
 
 		// check if player is in range and the game is not over
 		if (isPlayerInRange && !GameManager.instance.IsGameOver) {
+
+			Debug.Log("Player in range, attack()");
 
 			// play the attack animation
 			animator.Play("Attack");
@@ -114,5 +116,18 @@ public class EnemyAttack : MonoBehaviour {
 		}
 
 	}
+
+
+	// for debugging and understading distances
+	void OnDrawGizmos ()
+	{
+
+		// draw move sphere
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(transform.position, attackRangeMax);
+
+
+	}
+
 
 }

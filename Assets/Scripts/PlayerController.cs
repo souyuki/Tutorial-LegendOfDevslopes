@@ -9,7 +9,6 @@ public class PlayerController : MonoBehaviour {
 
 	[SerializeField] private LayerMask layerMask;
 
-
 	[SerializeField] private float turnSpeedSmoothing = 10f;
 
 	// get the colliders for the hero swords

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Assertions;
 
 public class PlayerHealth : MonoBehaviour {
 
@@ -9,6 +11,13 @@ public class PlayerHealth : MonoBehaviour {
 
 	// Time allowed between taking hits
 	[SerializeField] private float timeSinceLasthit = 2f;
+
+	// Wire up the health slider bar
+	[SerializeField] private Slider healthSlider;
+
+	// 
+	private ParticleSystem blood;
+
 
 	// track time between hits
 	private float timer = 0f;
@@ -28,6 +37,14 @@ public class PlayerHealth : MonoBehaviour {
 	// when the player is hit by the enemy
 	[SerializeField] private AudioClip playerHitSFX;
 
+	// 
+	void Awake()
+	{
+		// make sure we have a health slider
+		Assert.IsNotNull(healthSlider);	
+
+	}
+
 
 	// Use this for initialization
 	void Start () {
@@ -43,6 +60,10 @@ public class PlayerHealth : MonoBehaviour {
 
 		// get the player's audio source
 		audioSource = GetComponent<AudioSource>();
+
+		// get the blood particle effect
+		blood = GetComponentInChildren<ParticleSystem>();
+
 
 	}
 	
@@ -88,12 +109,18 @@ public class PlayerHealth : MonoBehaviour {
 			// play the player being hit animation
 			animator.Play ("Hurt");
 
+			// play the blood particle fx
+			blood.Play();
+
+
 			// play the sound effect
 			audioSource.PlayOneShot(playerHitSFX);
 
 			// TODO - give enemies independent damage
 			// Apply Damage
 			currentHealth -= 10;
+
+			healthSlider.value = currentHealth;
 
 		}
 
