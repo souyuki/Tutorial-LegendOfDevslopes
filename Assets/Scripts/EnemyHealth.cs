@@ -77,6 +77,9 @@ public class EnemyHealth : MonoBehaviour {
 		// set current health to starting health
 		currentHealth = startingHealth;
 
+		// Register this enemy as spawned.
+		GameManager.instance.RegisterEnemy(this);
+
 
 	}
 	
@@ -171,6 +174,10 @@ public class EnemyHealth : MonoBehaviour {
 
 		// allow body to move via script and not physics
 		rigidBody.isKinematic = true;
+
+		// register the killed enemy
+		GameManager.instance.KilledEnemy(this);
+
 
 		// play death animation
 		animator.SetTrigger("EnemyDie");
