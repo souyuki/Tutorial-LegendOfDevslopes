@@ -134,8 +134,12 @@ public class GameManager : MonoBehaviour {
 		// check spawn time > current time
 		if (currentSpawnTime > generatedSpawnTime) {
 
+				// reset spawn time
+				currentSpawnTime = 0f;
+
 			// check enemy count
 			if (spawnedEnemies.Count < currentLevel) {
+
 
 				Debug.Log ("GameManager SpawnEnemy() :: Spawning an enemy!");
 
@@ -177,14 +181,19 @@ public class GameManager : MonoBehaviour {
 				enemyCombatant.transform.position = assignedSpawnPoint.position;
 
 
-			} else if (spawnedEnemies.Count == currentLevel && spawnedEnemies.Count == killedEnemies.Count) {
+			} 
+
+			if (killedEnemies.Count == currentLevel) {
 
 				// clear both lists
 				spawnedEnemies.Clear();
 				killedEnemies.Clear();
 
+				yield return new WaitForSeconds (3f);
+
 				// set new level
 				currentLevel += 1;
+				levelTextValue.text = "Level " + currentLevel;
 
 				Debug.Log("SpawnEnemy() :: Level Complete, new level: " + currentLevel);
 
@@ -192,8 +201,8 @@ public class GameManager : MonoBehaviour {
 
 		}
 
-		//StartCoroutine( SpawnEnemy () );
-		yield break; 
+		yield return null; 
+		StartCoroutine( SpawnEnemy () );
 
 	} // end SpawnEnemy()
 

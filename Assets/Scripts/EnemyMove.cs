@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Assertions;
-
 
 public class EnemyMove : MonoBehaviour {
 
-	[SerializeField] private Transform player;
+	// get the player to target
+	private Transform player;
 
 	private NavMeshAgent nav;
 	private Animator animator;
@@ -20,14 +19,6 @@ public class EnemyMove : MonoBehaviour {
 	public float stopDistanceFromTarget = 10f;
 
 
-	void Awake()
-	{
-
-		Assert.IsNotNull(player);
-
-	}
-
-
 	// Use this for initialization
 	void Start () {
 
@@ -35,6 +26,9 @@ public class EnemyMove : MonoBehaviour {
 		animator 	= GetComponent<Animator>();
 		nav 		= GetComponent<NavMeshAgent>();
 		enemyHealth = GetComponent<EnemyHealth>();
+
+		// give the enemy the player object
+		player = GameManager.instance.Player.transform;
 
 		//nav.stoppingDistance = stopDistanceFromTarget;
 	}
