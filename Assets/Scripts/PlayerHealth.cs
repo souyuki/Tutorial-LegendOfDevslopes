@@ -37,6 +37,30 @@ public class PlayerHealth : MonoBehaviour {
 	// when the player is hit by the enemy
 	[SerializeField] private AudioClip playerHitSFX;
 
+
+	// GET SET for currentHealth
+	public int CurrentHealth {
+		get {
+			return currentHealth;
+		}
+		set {
+			// perevent negative values
+			if (value < 0) {
+				currentHealth = 0;
+			} else if (value > startingHealth) {
+
+				// prevent earning more than starting health
+				currentHealth = startingHealth;
+
+			} else {
+				currentHealth = value;
+			}
+
+		}
+
+
+	}
+
 	// 
 	void Awake()
 	{
@@ -147,4 +171,14 @@ public class PlayerHealth : MonoBehaviour {
 		characterController.enabled = false;
 
 	}
+
+
+	public void PowerUpHealth (int amount)
+	{
+		CurrentHealth += amount;
+
+
+		healthSlider.value = CurrentHealth;
+	}
+
 }

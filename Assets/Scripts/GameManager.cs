@@ -8,19 +8,31 @@ public class GameManager : MonoBehaviour {
 	// create singleton variable
 	public static GameManager instance = null;
 
-	[SerializeField] GameObject player;
+	[SerializeField] private GameObject player;
 
-	// store all spawn points
-	[SerializeField] GameObject[] spawnPoints;
+
+	// the spawn locations for the power ups
+	[SerializeField] private GameObject[] powerUpSpawnPoints;
+	[SerializeField] private int maxPowerUps = 3;
+	private float powerUpSpawnTimeDelay = 5f; 
+	private float currentPowerUpSpawnTimer = 0f;
+	private int currentPowerUpCount = 0;
+	private GameObject newPowerUp;
+	[SerializeField] private GameObject healthPowerUp;
+	[SerializeField] private GameObject speedPowerUp;
+
+
+	// store all enemy spawn points
+	[SerializeField] private GameObject[] spawnPoints;
 
 	// Enemies to spawn
-	[SerializeField] GameObject enemyTanker;
-	[SerializeField] GameObject enemySoldier;
-	[SerializeField] GameObject enemyRanger;
-	[SerializeField] GameObject arrow;
+	[SerializeField] private GameObject enemyTanker;
+	[SerializeField] private GameObject enemySoldier;
+	[SerializeField] private GameObject enemyRanger;
+	[SerializeField] private GameObject arrow;
 
 	// which game level we are on text
-	[SerializeField] Text levelTextValue;
+	[SerializeField] private Text levelTextValue;
 
 	// which current game level we are on value
 	private int currentLevel;
@@ -69,6 +81,13 @@ public class GameManager : MonoBehaviour {
 	}
 
 
+	public int CurrentPowerUpCount {
+		get {
+			return currentPowerUpCount;
+		}
+	}
+
+
 	void Awake ()
 	{
 
@@ -91,7 +110,11 @@ public class GameManager : MonoBehaviour {
 		// set current level to 1
 		currentLevel = 1;
 
+		// start spawning enemies
 		StartCoroutine( SpawnEnemy () );
+
+		// start spawning powerups
+		StartCoroutine( SpawnPowerUp () );
 
 	}
 	
@@ -100,6 +123,9 @@ public class GameManager : MonoBehaviour {
 
 		// keep track of time between spawn
 		currentSpawnTime += Time.deltaTime;
+
+		// keep track of power-up spawn time
+		currentPowerUpSpawnTimer += Time.deltaTime;
 
 	}
 
@@ -114,7 +140,6 @@ public class GameManager : MonoBehaviour {
 			// player is dead
 			isGameOver = true;
 		}
-
 
 	}
 
@@ -134,6 +159,16 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+
+	public void RegisterPowerUp ()
+	{
+		currentPowerUpCount++;
+	}
+
+	public void UnregisterPowerUp ()
+	{
+		currentPowerUpCount--;
+	}
 
 
 	IEnumerator SpawnEnemy ()
@@ -213,6 +248,44 @@ public class GameManager : MonoBehaviour {
 		StartCoroutine( SpawnEnemy () );
 
 	} // end SpawnEnemy()
+
+
+
+	IEnumerator SpawnPowerUp ()
+	{
+		// if enough time has passed
+		if (currentPowerUpSpawnTimer > powerUpSpawnTimeDelay) {
+
+			currentPowerUpSpawnTimer = 0;
+
+			// if max power-ups is not met
+			if (CurrentPowerUpCount < maxPowerUps) {
+
+				Debug.Log ("SpawnPowerUp() called");
+
+				// which power-up
+				int powerUpPick = Random.Range (0, 2);
+
+				if (powerUpPick == 0) {
+					newPowerUp = Instantiate (healthPowerUp) as GameObject;
+				} else if (powerUpPick == 1) {
+					newPowerUp = Instantiate (speedPowerUp) as GameObject;
+				}
+
+				// move it to spawn location
+				int rnd = Random.Range(0,powerUpSpawnPoints.Length);
+				newPowerUp.transform.position = powerUpSpawnPoints[rnd].transform.position;
+
+			}
+
+		}
+
+		// return and be recursive
+		yield return null; 
+		StartCoroutine( SpawnPowerUp () );
+
+
+	}
 
 
 }
