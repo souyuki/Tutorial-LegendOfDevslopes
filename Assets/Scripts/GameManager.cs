@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] GameObject enemyTanker;
 	[SerializeField] GameObject enemySoldier;
 	[SerializeField] GameObject enemyRanger;
+	[SerializeField] GameObject arrow;
 
 	// which game level we are on text
 	[SerializeField] Text levelTextValue;
@@ -57,6 +58,13 @@ public class GameManager : MonoBehaviour {
 		}
 		set {
 			player = value;
+		}
+	}
+
+	// GETTER for player
+	public GameObject Arrow {
+		get {
+			return arrow;
 		}
 	}
 
