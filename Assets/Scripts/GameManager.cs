@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 	// the spawn locations for the power ups
 	[SerializeField] private GameObject[] powerUpSpawnPoints;
 	[SerializeField] private int maxPowerUps = 3;
-	private float powerUpSpawnTimeDelay = 5f; 
+	private float powerUpSpawnTimeDelay = 60f; 
 	private float currentPowerUpSpawnTimer = 0f;
 	private int currentPowerUpCount = 0;
 	private GameObject newPowerUp;

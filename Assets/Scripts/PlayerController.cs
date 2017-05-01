@@ -5,7 +5,14 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
 	// hero move speed
-	[SerializeField] private float moveSpeed = 10.0f;
+	[SerializeField] private float moveSpeed = 6.0f;
+
+	// move bonus for speed power-up
+	private float speedPowerUpIncreaseAmount = 6.0f;
+
+	// speed boost particle effect
+	private GameObject fireTrail;
+	private ParticleSystem fireParticleSystem;
 
 	[SerializeField] private LayerMask layerMask;
 
@@ -33,7 +40,13 @@ public class PlayerController : MonoBehaviour {
 
 		// look for the sword colliders
 		heroSwordColliders = GetComponentsInChildren<BoxCollider>();
-		
+
+		// get the firetrail object
+		fireTrail = GameObject.FindWithTag("Fire") as GameObject;
+
+		// turn it off at the start
+		fireTrail.SetActive(false);
+
 	}
 	
 	// Update is called once per frame
@@ -135,5 +148,47 @@ public class PlayerController : MonoBehaviour {
 
 	}
 
+	// pickup of the speed power-up
+	public void SpeedPowerUp ()
+	{
+		// call the coroutine
+		StartCoroutine( FireTrailRoutine() );
+
+	}
+
+	// Coroutine for the speed power-up
+	IEnumerator FireTrailRoutine ()
+	{
+
+		// add bonus move speed
+		moveSpeed += speedPowerUpIncreaseAmount;
+
+		// turn on wildfire particle
+		fireTrail.SetActive(true);
+
+		// give it 10 seconds
+		yield return new WaitForSeconds(10f);
+
+		// disable the speed
+		moveSpeed -= speedPowerUpIncreaseAmount;
+
+		// get access to particule system
+		fireParticleSystem = fireTrail.GetComponent<ParticleSystem>();
+
+		// get the emitter
+		var em = fireParticleSystem.emission;
+
+		// turn off the emitter prior to killing the power-up
+		em.enabled = false;
+
+		// give it a 3 seconds fade out
+		yield return new WaitForSeconds(3f);
+
+		// turn off the particle
+		em.enabled = true;
+		fireTrail.SetActive(false);
+
+
+	}
 
 }
