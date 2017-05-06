@@ -142,7 +142,7 @@ public class EnemyHealth : MonoBehaviour {
 			// apply the damage
 			currentHealth -= 10;
 
-			Debug.Log(gameObject.name + " taking damage from player");
+			//Debug.Log(gameObject.name + " taking damage from player");
 
 		}
 

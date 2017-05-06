@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour {
 	// the spawn locations for the power ups
 	[SerializeField] private GameObject[] powerUpSpawnPoints;
 	[SerializeField] private int maxPowerUps = 3;
-	private float powerUpSpawnTimeDelay = 60f; 
+	private float powerUpSpawnTimeDelay = 10f; 
 	private float currentPowerUpSpawnTimer = 0f;
 	private int currentPowerUpCount = 0;
 	private GameObject newPowerUp;
@@ -238,7 +238,7 @@ public class GameManager : MonoBehaviour {
 				currentLevel += 1;
 				levelTextValue.text = "Level " + currentLevel;
 
-				Debug.Log("SpawnEnemy() :: Level Complete, new level: " + currentLevel);
+				//Debug.Log("SpawnEnemy() :: Level Complete, new level: " + currentLevel);
 
 			}
 
@@ -256,12 +256,13 @@ public class GameManager : MonoBehaviour {
 		// if enough time has passed
 		if (currentPowerUpSpawnTimer > powerUpSpawnTimeDelay) {
 
+			Debug.Log ("SpawnPowerUp() called and time is ok");
 			currentPowerUpSpawnTimer = 0;
 
 			// if max power-ups is not met
 			if (CurrentPowerUpCount < maxPowerUps) {
 
-				Debug.Log ("SpawnPowerUp() called");
+				Debug.Log ("Spawning Powerup");
 
 				// which power-up
 				int powerUpPick = Random.Range (0, 2);
