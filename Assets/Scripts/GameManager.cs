@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
@@ -31,11 +32,18 @@ public class GameManager : MonoBehaviour {
 	[SerializeField] private GameObject enemyRanger;
 	[SerializeField] private GameObject arrow;
 
+	// the victory or lose text at the end of the game
+	[SerializeField] private Text endGameText;
+
 	// which game level we are on text
 	[SerializeField] private Text levelTextValue;
 
 	// which current game level we are on value
 	private int currentLevel;
+
+	// the final level on 
+	private int finalLevel = 20;
+
 
 	// enemy spawn rate on waves
 	private float generatedSpawnTime = 1f;
@@ -99,13 +107,16 @@ public class GameManager : MonoBehaviour {
 			Destroy(gameObject);
 		}
 
-		DontDestroyOnLoad(gameObject);
+		//DontDestroyOnLoad(gameObject);
 
 	}
 
 
 	// Use this for initialization
 	void Start () {
+
+		// get reference to end game text and disable it for now
+		endGameText.enabled = false;
 
 		// set current level to 1
 		currentLevel = 1;
@@ -139,6 +150,9 @@ public class GameManager : MonoBehaviour {
 		} else {
 			// player is dead
 			isGameOver = true;
+
+			// game is over
+			EndGame(false);
 		}
 
 	}
@@ -159,12 +173,13 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-
+	// store that a power up was created
 	public void RegisterPowerUp ()
 	{
 		currentPowerUpCount++;
 	}
 
+	// store that a powerup was consumed
 	public void UnregisterPowerUp ()
 	{
 		currentPowerUpCount--;
@@ -177,21 +192,23 @@ public class GameManager : MonoBehaviour {
 		// check spawn time > current time
 		if (currentSpawnTime > generatedSpawnTime) {
 
-				// reset spawn time
-				currentSpawnTime = 0f;
+			// reset spawn time
+			currentSpawnTime = 0f;
 
 			// check enemy count
 			if (spawnedEnemies.Count < currentLevel) {
 
 
-				Debug.Log ("GameManager SpawnEnemy() :: Spawning an enemy!");
+				//Debug.Log ("GameManager SpawnEnemy() :: Spawning an enemy!");
 
 				// spawn enemy
 				// 0 = solider, 1 = ranger, 2 = tanker
 				GameObject enemyToSpawn = null;
 
+				// random enemy to spawn
 				int rnd = Random.Range (0, 3);
 
+				// which game object are we spawning?
 				switch (rnd) {
 
 				case 0:
@@ -215,7 +232,7 @@ public class GameManager : MonoBehaviour {
 
 				// which spawn point is it at
 				int spawnRND = Random.Range (0, spawnPoints.Length);
-				Transform assignedSpawnPoint = spawnPoints[spawnRND].transform;
+				Transform assignedSpawnPoint = spawnPoints [spawnRND].transform;
 
 				// spawn it
 				GameObject enemyCombatant = Instantiate (enemyToSpawn, assignedSpawnPoint) as GameObject;
@@ -226,11 +243,12 @@ public class GameManager : MonoBehaviour {
 
 			} 
 
-			if (killedEnemies.Count == currentLevel) {
+			// check if weve killed the enemies and if its the final level
+			if (killedEnemies.Count == currentLevel && currentLevel != finalLevel) {
 
 				// clear both lists
-				spawnedEnemies.Clear();
-				killedEnemies.Clear();
+				spawnedEnemies.Clear ();
+				killedEnemies.Clear ();
 
 				yield return new WaitForSeconds (3f);
 
@@ -239,8 +257,15 @@ public class GameManager : MonoBehaviour {
 				levelTextValue.text = "Level " + currentLevel;
 
 				//Debug.Log("SpawnEnemy() :: Level Complete, new level: " + currentLevel);
+			}
+
+			// if weve reached the ned
+			if (killedEnemies.Count == finalLevel) {
+				// victory
+				StartCoroutine( EndGame(true) );
 
 			}
+
 
 		}
 
@@ -288,5 +313,35 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+
+	// the end game function
+	IEnumerator EndGame (bool didWin)
+	{
+
+		Debug.Log("EndGame() called");
+
+		// victory
+		if (didWin) {
+
+			// win text
+			endGameText.text = "Victory!";
+
+		} else {
+
+			// lose
+			endGameText.text = "Game Over";
+
+		}
+
+		// activate to deliver the message
+		endGameText.enabled = true;
+
+		// wait 5 seconds
+		yield return new WaitForSeconds(5f);
+
+		// return to main menu
+		SceneManager.LoadScene("GameMenu");
+
+	}
 
 }
